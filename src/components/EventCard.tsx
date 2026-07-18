@@ -142,7 +142,9 @@ export function EventCard({
       </div>
 
       <p className="mt-3 font-mono text-xs font-bold uppercase">Event</p>
-      <h2 className="mt-1 text-2xl font-black">{event.title}</h2>
+      <Link to={`/events/${event.id}`} className="group">
+        <h2 className="mt-1 text-2xl font-black group-hover:underline">{event.title}</h2>
+      </Link>
       <p className="mt-1 font-mono text-sm font-bold">{club?.name}</p>
 
       {event.description ? <p className="mt-4 text-sm leading-6">{event.description}</p> : null}
@@ -158,7 +160,7 @@ export function EventCard({
         </div>
         <div>
           <dt className="font-mono text-xs font-bold uppercase">Attendees</dt>
-          <dd className="mt-1 text-sm">{rsvps.length} RSVP&apos;d</dd>
+          <dd className="mt-1 text-sm">{rsvps.length} RSVP'd</dd>
         </div>
       </dl>
 
