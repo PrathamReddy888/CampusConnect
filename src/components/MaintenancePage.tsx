@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './MaintenancePage.css';
 
-interface MaintenancePageProps {
+export interface MaintenancePageProps {
   onRetry?: () => void;
   errorDetails?: string;
 }
 
-const MaintenancePage: React.FC<MaintenancePageProps> = ({ onRetry, errorDetails }) => {
+export default function MaintenancePage({ onRetry, errorDetails }: MaintenancePageProps) {
   const [dots, setDots] = useState('');
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const MaintenancePage: React.FC<MaintenancePageProps> = ({ onRetry, errorDetails
   return (
     <div className="maintenance-container">
       <div className="maintenance-card">
-        <div className="maintenance-icon">
+        <div className="maintenance-icon" aria-hidden="true">
           <svg
             width="64"
             height="64"
@@ -52,7 +52,8 @@ const MaintenancePage: React.FC<MaintenancePageProps> = ({ onRetry, errorDetails
 
         <h1 className="maintenance-title">Under Maintenance</h1>
         <p className="maintenance-subtitle">
-          We're fixing things up behind the scenes{dots}
+          We&apos;re fixing things up behind the scenes
+          {dots}
         </p>
 
         <div className="maintenance-status-box">
@@ -68,7 +69,7 @@ const MaintenancePage: React.FC<MaintenancePageProps> = ({ onRetry, errorDetails
         )}
 
         <div className="maintenance-actions">
-          <button className="neu-btn neu-btn-primary" onClick={handleRetry}>
+          <button type="button" className="neu-btn neu-btn-primary" onClick={handleRetry}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
               <path d="M3 3v5h5" />
@@ -103,10 +104,12 @@ const MaintenancePage: React.FC<MaintenancePageProps> = ({ onRetry, errorDetails
       </div>
 
       <div className="maintenance-footer">
-        <p>CampusConnect Team • {new Date().getFullYear()}</p>
+        <p>
+          CampusConnect Team •
+          {' '}
+          {new Date().getFullYear()}
+        </p>
       </div>
     </div>
   );
-};
-
-export default MaintenancePage;
+}
