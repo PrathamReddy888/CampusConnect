@@ -10,6 +10,13 @@ export default function MaintenancePage({ onRetry, errorDetails }: MaintenancePa
   const [dots, setDots] = useState('');
 
   useEffect(() => {
+    // Honor prefers-reduced-motion: skip animation if user requests reduced motion
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mediaQuery.matches) {
+      setDots('...');
+      return undefined;
+    }
+
     const interval = setInterval(() => {
       setDots((prev) => (prev.length >= 3 ? '' : prev + '.'));
     }, 500);
