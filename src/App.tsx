@@ -76,9 +76,7 @@ async function checkDatabaseConnection(): Promise<boolean> {
   try {
     const supabase = createClient();
 
-    const healthCheck = supabase
-      .from("profiles")
-      .select("id", { count: "exact", head: true });
+    const healthCheck = supabase.from("profiles").select("id", { count: "exact", head: true });
 
     const timeout = new Promise<never>((_, reject) =>
       setTimeout(
@@ -87,9 +85,8 @@ async function checkDatabaseConnection(): Promise<boolean> {
       ),
     );
 
-    const { error } = (await Promise.race([healthCheck, timeout])) as Awaited
-      typeof healthCheck
-    >;
+    type HealthCheckResult = Awaited<typeof healthCheck>;
+    const { error } = (await Promise.race([healthCheck, timeout])) as HealthCheckResult;
 
     if (error) {
       console.error("Database health check returned an error:", error.message);
