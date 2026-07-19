@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import MaintenancePage from './components/MaintenancePage';
 import './App.css';
 
 // ============================================
 // DB Health Check Configuration
 // ============================================
-const HEALTH_CHECK_URL = import.meta.env.VITE_API_HEALTH_URL || '/api/health';
+// Supports both Vite (import.meta.env) and Create React App (process.env)
+const HEALTH_CHECK_URL =
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_HEALTH_URL)
+  || (typeof process !== 'undefined' && process.env?.REACT_APP_API_HEALTH_URL)
+  || '/api/health';
+
 const HEALTH_CHECK_TIMEOUT = 8000; // 8 seconds
-const MAX_RETRIES = 2;
 
 interface HealthStatus {
   ok: boolean;
   error?: string;
 }
 
-const checkDatabaseHealth = async (): Promise<HealthStatus> => {
+async function checkDatabaseHealth(): Promise<HealthStatus> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), HEALTH_CHECK_TIMEOUT);
@@ -51,55 +55,62 @@ const checkDatabaseHealth = async (): Promise<HealthStatus> => {
       error: `Connection failed: ${message}`,
     };
   }
-};
+}
+
+// ============================================
+// Loading Spinner Component
+// ============================================
+function LoadingScreen() {
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#ffde00',
+        fontFamily: 'Inter, system-ui, sans-serif',
+        fontWeight: 800,
+        fontSize: '1.25rem',
+        color: '#0a0a0a',
+      }}
+    >
+      <div
+        style={{
+          border: '4px solid #0a0a0a',
+          padding: '24px 40px',
+          backgroundColor: '#ffffff',
+          boxShadow: '8px 8px 0px 0px #0a0a0a',
+        }}
+      >
+        CHECKING SYSTEM STATUS...
+      </div>
+    </div>
+  );
+}
 
 // ============================================
 // Main App Component
 // ============================================
-const App: React.FC = () => {
+export default function App() {
   const [dbStatus, setDbStatus] = useState<HealthStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
 
-  const performHealthCheck = async () => {
+  const performHealthCheck = useCallback(async () => {
     setIsLoading(true);
     const result = await checkDatabaseHealth();
     setDbStatus(result);
     setIsLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     performHealthCheck();
-  }, [retryCount]);
+  }, [performHealthCheck, retryCount]);
 
-  // Optional: Show a minimal loader while checking
+  // Show loading state while checking
   if (isLoading) {
-    return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#ffde00',
-          fontFamily: 'Inter, system-ui, sans-serif',
-          fontWeight: 800,
-          fontSize: '1.25rem',
-          color: '#0a0a0a',
-        }}
-      >
-        <div
-          style={{
-            border: '4px solid #0a0a0a',
-            padding: '24px 40px',
-            backgroundColor: '#ffffff',
-            boxShadow: '8px 8px 0px 0px #0a0a0a',
-          }}
-        >
-          CHECKING SYSTEM STATUS...
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   // If DB check fails, render the custom maintenance page
@@ -122,6 +133,4 @@ const App: React.FC = () => {
       <p>All systems operational.</p>
     </div>
   );
-};
-
-export default App;
+}
