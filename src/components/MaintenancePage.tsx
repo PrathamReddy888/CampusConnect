@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import './MaintenancePage.css';
+import { useEffect, useState } from "react";
+import "./MaintenancePage.css";
 
 export interface MaintenancePageProps {
   onRetry?: () => void;
@@ -7,18 +7,18 @@ export interface MaintenancePageProps {
 }
 
 export default function MaintenancePage({ onRetry, errorDetails }: MaintenancePageProps) {
-  const [dots, setDots] = useState('');
+  const [dots, setDots] = useState("");
 
   useEffect(() => {
     // Honor prefers-reduced-motion: skip animation if user requests reduced motion
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mediaQuery.matches) {
-      setDots('...');
+      setDots("...");
       return undefined;
     }
 
     const interval = setInterval(() => {
-      setDots((prev) => (prev.length >= 3 ? '' : prev + '.'));
+      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
     }, 500);
     return () => clearInterval(interval);
   }, []);
@@ -77,7 +77,14 @@ export default function MaintenancePage({ onRetry, errorDetails }: MaintenancePa
 
         <div className="maintenance-actions">
           <button type="button" className="neu-btn neu-btn-primary" onClick={handleRetry}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
               <path d="M3 3v5h5" />
               <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
@@ -92,7 +99,14 @@ export default function MaintenancePage({ onRetry, errorDetails }: MaintenancePa
             target="_blank"
             rel="noopener noreferrer"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
               <polyline points="22,6 12,13 2,6" />
             </svg>
@@ -111,11 +125,7 @@ export default function MaintenancePage({ onRetry, errorDetails }: MaintenancePa
       </div>
 
       <div className="maintenance-footer">
-        <p>
-          CampusConnect Team •
-          {' '}
-          {new Date().getFullYear()}
-        </p>
+        <p>CampusConnect Team • {new Date().getFullYear()}</p>
       </div>
     </div>
   );
