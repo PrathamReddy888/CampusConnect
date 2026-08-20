@@ -43,7 +43,7 @@ function EventDualClockTimeImpl({
     );
   }
 
-  // ── Single-clock variant ─────────────────────────────────────────
+  // ── Single-clock variant (tz match) ──────────────────────────────
   if (!data.isDualClock) {
     const startDate = new Date(data.startUtcIso);
     const dateStr = new Intl.DateTimeFormat("en-US", {
@@ -57,12 +57,16 @@ function EventDualClockTimeImpl({
       ? `${data.localStart} – ${data.localEnd} ${data.userTzAbbrev}`
       : `${data.localStart} ${data.userTzAbbrev}`;
 
+    const timeNode = (
+      <time dateTime={data.startUtcIso} itemProp="startDate">
+        {dateStr} · {rangeStr}
+      </time>
+    );
+
     if (variant === "compact") {
       return (
         <span className={cn("font-mono text-sm text-gray-700", className)}>
-          <time dateTime={data.startUtcIso} itemProp="startDate">
-            {dateStr} · {rangeStr}
-          </time>
+          {timeNode}
         </span>
       );
     }
@@ -71,9 +75,7 @@ function EventDualClockTimeImpl({
       <div className={cn("flex items-start gap-3", className)}>
         <Calendar size={18} aria-hidden="true" className="mt-0.5 flex-shrink-0 text-gray-600" />
         <div className="font-mono text-sm text-gray-800">
-          <time dateTime={data.startUtcIso} itemProp="startDate">
-            {dateStr} · {rangeStr}
-          </time>
+          {timeNode}
           {data.relativeDayHint && (
             <span className="ml-2 rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-amber-700">
               {data.relativeDayHint}
@@ -84,7 +86,7 @@ function EventDualClockTimeImpl({
     );
   }
 
-  // ── Dual-clock variant ───────────────────────────────────────────
+  // ── Dual-clock variant (tz differ) ──────────────────────────────
   const venueCityLabel = venueTimezoneLabel(data.venueTimeZone);
   const venueFullLabel = venueLabel ? `${venueLabel}` : `${venueCityLabel} Time`;
   const hint = data.relativeDayHint ? ` (${data.relativeDayHint})` : "";
